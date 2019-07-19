@@ -1,5 +1,8 @@
 package cn.voidnet.SimpleHTTPFramework;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -9,6 +12,8 @@ public class HTTPServer {//Container
     private int port;
     private Servlet servletInstance;
     private ServerSocket local;
+    private static Logger logger = LoggerFactory.getLogger(HTTPServer.class);
+    
 
     public HTTPServer(int port, Servlet servletInstance) {
         this.port = port;
@@ -29,9 +34,11 @@ public class HTTPServer {//Container
 
     private void handleRequest(Socket client) {
         try {
-            ServletRequest request = new ServletRequest(client.getInputStream());
-            ServletResponse response = new ServletResponse(client.getOutputStream());
+            logger.info("Request from " + client.getRemoteSocketAddress());
+            ServletRequest request = new ServletRequest(client);
+            ServletResponse response = new ServletResponse(client);
             servletInstance.service(request, response);
+            logger.info("Request done");
             response.writeResponse();
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,5 +49,6 @@ public class HTTPServer {//Container
                 e.printStackTrace();
             }
         }
+
     }
 }

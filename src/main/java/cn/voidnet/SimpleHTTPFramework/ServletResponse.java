@@ -1,21 +1,22 @@
 package cn.voidnet.SimpleHTTPFramework;
 
 import java.io.BufferedWriter;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.util.Map;
 
 public class ServletResponse {
     private String body;
-    private HeaderMap headerMap;
+    private Map<String, String> headerMap;
     private int statusCode;
-    private OutputStream out;
+    private Socket remote;
 
-    public ServletResponse(OutputStream out) {
-        this.out = out;
+    public ServletResponse(Socket remote) {
+        this.remote = remote;
     }
 
     public void writeResponse() throws Exception {
-        var writer = new BufferedWriter(new OutputStreamWriter(out));
+        var writer = new BufferedWriter(new OutputStreamWriter(remote.getOutputStream()));
         writer.write(toReqeustMessage());
         writer.write('\n');
         writer.flush();
@@ -36,7 +37,7 @@ public class ServletResponse {
         return this;
     }
 
-    public HeaderMap getHeaderMap() {
+    public Map<String, String> getHeaderMap() {
         return headerMap;
     }
 
@@ -49,7 +50,7 @@ public class ServletResponse {
         return this;
     }
 
-    public OutputStream getOutputStream() {
-        return out;
+    public Socket getRemote() {
+        return remote;
     }
 }
