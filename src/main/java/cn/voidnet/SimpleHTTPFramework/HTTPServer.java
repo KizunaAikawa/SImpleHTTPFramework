@@ -33,9 +33,14 @@ public class HTTPServer {//Container
             ServletResponse response = new ServletResponse(client.getOutputStream());
             servletInstance.service(request, response);
             response.writeResponse();
-            client.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                client.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
